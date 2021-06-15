@@ -420,7 +420,7 @@ export default {
             this.createList();
             window.localStorage.setItem("url", null);
             console.log("success");
-            this.addPopup = false;
+            this.detailPopup = false;
           } else {
             this.isError = true;
           }
