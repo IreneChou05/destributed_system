@@ -77,39 +77,6 @@
               {{ "\xa0" + card.state.toUpperCase() }}</label
             >
             <p class="train_date">{{ getCurrent() }}</p>
-            <template v-if="card.state == 'Finish'">
-              <el-popconfirm
-                confirm-button-text="YES"
-                confirm-button-type="warning"
-                cancel-button-text="CANCEL"
-                title="Save this training ?"
-                @confirm="saveModel(card)"
-              >
-                <el-button
-                  class="save_btn"
-                  slot="reference"
-                  type="success"
-                  circle
-                  ><i class="el-icon-check"
-                /></el-button>
-              </el-popconfirm>
-            </template>
-
-            <el-popconfirm
-              confirm-button-text="YES"
-              confirm-button-type="warning"
-              cancel-button-text="CANCEL"
-              title="Delete this training ?"
-              @confirm="remove(card)"
-            >
-              <el-button
-                slot="reference"
-                class="delete_btn"
-                type="danger"
-                circle
-                ><i class="el-icon-delete"
-              /></el-button>
-            </el-popconfirm>
           </el-card>
         </template>
       </div>
@@ -187,14 +154,41 @@
     >
       <h1>{{ detail.name }}</h1>
       <p class="detail_blank">State: {{ detail.state }}</p>
-      <p class="detail_blank">Report: {{ detail.report }}</p>
-      <p class="detail_blank">Dataset ID: {{ detail.dataset_id }}</p>
-      <!-- <p class="detail_blank">
-        Normalize: {{ submit.configs.preprocessConfig.normalize }}
-      </p> -->
-      <!-- <p class="detail_blank">
-        ValidateRatio: {{ submit.configs.trainConfig.validateRatio }}
-      </p> -->
+      <p class="detail_blank">ModelUrl: {{ detail.modelUrl }}</p>
+      <p class="detail_blank">DatasetUrl: {{ detail.datasetUrl }}</p>
+      <p class="detail_blank">valLoss: {{ detail.valLoss }}</p>
+      <p class="detail_blank">trainLoss: {{ detail.trainLoss }}</p>
+      <p class="detail_blank">valAcc: {{ detail.valAcc }}</p>
+      <p class="detail_blank">createdAt: {{ detail.createdAt }}</p>
+      <!-- <p class="detail_blank">cmds: {{ detail.preConfig.cmds }}</p>
+      <p class="detail_blank">Task: {{ detail.mlConfig.task }}</p>
+      <p class="detail_blank">validateRatio: {{ detail.mlConfig.validateRatio }}</p>
+      <p class="detail_blank">modelTag: {{ detail.mlConfig.modelTag }}</p> -->
+      <template v-if="detail.state == 'Finish'">
+        <el-popconfirm
+          confirm-button-text="YES"
+          confirm-button-type="warning"
+          cancel-button-text="CANCEL"
+          title="Save this training ?"
+          @confirm="saveModel(detail.userId)"
+        >
+          <el-button class="save_btn" slot="reference" type="success" circle
+            ><i class="el-icon-check"
+          /></el-button>
+        </el-popconfirm>
+      </template>
+
+      <el-popconfirm
+        confirm-button-text="YES"
+        confirm-button-type="warning"
+        cancel-button-text="CANCEL"
+        title="Delete this training ?"
+        @confirm="remove(detail.id)"
+      >
+        <el-button slot="reference" class="delete_btn" type="danger" circle
+          ><i class="el-icon-delete"
+        /></el-button>
+      </el-popconfirm>
       <div style="text-align: right"></div>
     </el-dialog>
   </div>
@@ -399,22 +393,22 @@ export default {
     add(subItem) {
       this.components.push(subItem);
     },
-    saveModel(card) {
-      let index = this.pretrainList.indexOf(card);
+    saveModel() {
       let saveForm = {
-        userId: this.pretrainList[index].userId,
-        modelUrl: this.pretrainList[index].modelUrl,
+        userId: this.detail.userId,
+        modelUrl: this.detail.modelUrl,
         report: {
-          task: this.pretrainList[index].mlConfig.task,
+          task: this.detail.mlConfig.task,
           trainLoss: 0.03,
           valLoss: 0.05,
           trainLossVar: 0.3, // regression only
           valLossVar: 0.5, // regression only
         },
       };
+      console.log("save", saveForm);
     },
-    remove(card) {
-      this.pretrainList.splice(this.pretrainList.indexOf(card), 1);
+    remove(id) {
+      this.pretrainList.splice(this.pretrainList.indexOf(id), 1);
     },
     submitForm() {
       let submitForm = {
@@ -725,14 +719,14 @@ img {
   margin: 5px;
   bottom: 10px;
   right: 70px;
-  z-index: 100;
+  z-index: 200;
 }
 .delete_btn {
   position: absolute;
   margin: 5px;
   bottom: 10px;
   right: 10px;
-  z-index: 100;
+  z-index: 200;
 }
 .detail_blank {
   font-size: 20px;
