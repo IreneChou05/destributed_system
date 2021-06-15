@@ -275,7 +275,7 @@ export default {
             mean: 1.1,
             variance: 2.2
         },
-        rowData: [""]
+        rowData: []
     }
       ],
       addForm: {
