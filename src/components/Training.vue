@@ -71,7 +71,7 @@
               <template v-if="card.state == 'Training'">
                 <i class="el-icon-loading" />
               </template>
-              <template v-else-if="card.state == 'Finish'">
+              <template v-else-if="card.state == 'Finished'">
                 <i class="el-icon-circle-check" />
               </template>
               {{ "\xa0" + card.state.toUpperCase() }}</label
@@ -164,7 +164,7 @@
       <p class="detail_blank">Task: {{ detail.mlConfig.task }}</p>
       <p class="detail_blank">validateRatio: {{ detail.mlConfig.validateRatio }}</p>
       <p class="detail_blank">modelTag: {{ detail.mlConfig.modelTag }}</p> -->
-      <template v-if="detail.state == 'Finish'">
+      <template v-if="detail.state == 'Finished'">
         <el-popconfirm
           confirm-button-text="YES"
           confirm-button-type="warning"
