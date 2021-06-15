@@ -22,7 +22,7 @@
           placeholder="Search title.."
           prefix-icon="el-icon-search"
         />
-        <template v-for="item in filteredList">
+        <template v-for="item in items">
           <template v-if="item.subs">
             <el-submenu :index="item.index" :key="item.index">
               <template slot="title">
@@ -56,7 +56,7 @@
     </div>
     <div id="canvas" class="canvas">
       <div class="train_view" :class="{ train_view2: !show }">
-        <template v-for="(card, i) in pretrainList">
+        <template v-for="(card, i) in filteredList">
           <el-card
             shadow="hover"
             id="train_blank"
@@ -76,7 +76,7 @@
               </template>
               {{ "\xa0" + card.state.toUpperCase() }}</label
             >
-            <p class="train_date">{{ getCurrent() }}</p>
+            <p class="train_date">{{card.createdAt}}</p>
           </el-card>
         </template>
       </div>
@@ -195,7 +195,7 @@
 </template>
 
 <script>
-// import {training_job_url} from "@/config/api.js";
+import {training_job_url} from "@/config/api.js";
 import { datasets_url } from "@/config/api.js";
 export default {
   data() {
@@ -294,69 +294,69 @@ export default {
         ],
       },
       pretrainList: [
-        {
-          id: "",
-          name: "name1",
-          state: "Training",
-          datasetUrl: "url",
-          modelUrl: "url",
-          valLoss: 1.1,
-          trainLoss: 2.2,
-          valAcc: 3.3,
-          trainAcc: 4.4,
-          createdAt: "2021-06-12 09:09:09",
-          userId: "id",
-          preConfig: {
-            cmds: [""],
-          },
-          mlConfig: {
-            task: "classification",
-            validateRatio: 0.2,
-            modelTag: "nn",
-          },
-        },
-        {
-          id: "",
-          name: "name2",
-          state: "Finish",
-          datasetUrl: "url",
-          modelUrl: "url",
-          valLoss: 1.1,
-          trainLoss: 2.2,
-          valAcc: 3.3,
-          trainAcc: 4.4,
-          createdAt: "2021-06-12 09:09:09",
-          userId: "id",
-          preConfig: {
-            cmds: [""],
-          },
-          mlConfig: {
-            task: "classification",
-            validateRatio: 0.2,
-            modelTag: "nn",
-          },
-        },
-        {
-          id: "",
-          name: "name3",
-          state: "Finish",
-          datasetUrl: "url",
-          modelUrl: "url",
-          valLoss: 1.1,
-          trainLoss: 2.2,
-          valAcc: 3.3,
-          trainAcc: 4.4,
-          createdAt: "2021-06-12 09:09:09",
-          userId: "id",
-          preConfig: {
-            cmds: [""],
-          },
-          mlConfig: {
-            task: "classification",
-            validateRatio: 0.2,
-            modelTag: "nn",
-          },
-        },
+        // {
+        //   id: "",
+        //   name: "name1",
+        //   state: "Training",
+        //   datasetUrl: "url",
+        //   modelUrl: "url",
+        //   valLoss: 1.1,
+        //   trainLoss: 2.2,
+        //   valAcc: 3.3,
+        //   trainAcc: 4.4,
+        //   createdAt: "2021-06-12 09:09:09",
+        //   userId: "id",
+        //   preConfig: {
+        //     cmds: [""],
+        //   },
+        //   mlConfig: {
+        //     task: "classification",
+        //     validateRatio: 0.2,
+        //     modelTag: "nn",
+        //   },
+        // },
+        // {
+        //   id: "",
+        //   name: "name2",
+        //   state: "Finish",
+        //   datasetUrl: "url",
+        //   modelUrl: "url",
+        //   valLoss: 1.1,
+        //   trainLoss: 2.2,
+        //   valAcc: 3.3,
+        //   trainAcc: 4.4,
+        //   createdAt: "2021-06-12 09:09:09",
+        //   userId: "id",
+        //   preConfig: {
+        //     cmds: [""],
+        //   },
+        //   mlConfig: {
+        //     task: "classification",
+        //     validateRatio: 0.2,
+        //     modelTag: "nn",
+        //   },
+        // },
+        // {
+        //   id: "",
+        //   name: "name3",
+        //   state: "Finish",
+        //   datasetUrl: "url",
+        //   modelUrl: "url",
+        //   valLoss: 1.1,
+        //   trainLoss: 2.2,
+        //   valAcc: 3.3,
+        //   trainAcc: 4.4,
+        //   createdAt: "2021-06-12 09:09:09",
+        //   userId: "id",
+        //   preConfig: {
+        //     cmds: [""],
+        //   },
+        //   mlConfig: {
+        //     task: "classification",
+        //     validateRatio: 0.2,
+        //     modelTag: "nn",
+        //   },
+        // },
       ],
       detail: [
         {
@@ -399,16 +399,39 @@ export default {
         modelUrl: this.detail.modelUrl,
         report: {
           task: this.detail.mlConfig.task,
-          trainLoss: 0.03,
-          valLoss: 0.05,
-          trainLossVar: 0.3, // regression only
-          valLossVar: 0.5, // regression only
+          trainLoss: this.detail.trainLoss,
+          valLoss: this.detail.valLoss,
+          trainLossVar: this.detail.trainLossVar, // regression only
+          valLossVar: this.detail.valLossVar, // regression only
         },
       };
       console.log("save", saveForm);
     },
     remove(id) {
-      this.pretrainList.splice(this.pretrainList.indexOf(id), 1);
+      console.log("id",training_job_url+`/${id}`)
+      // fetch(training_job_url+`/${id}`, {
+      //   method: "DELETE",
+      //   headers: {
+      //     "Accept": "application/json",
+      //     "Content-Type": "application/json",
+      //     "Authorization": "Bearer " + window.localStorage.getItem("token"),
+      //   },
+      // })
+      //   .then(async (resp) => {
+      //     const a = await resp.json();
+      //     console.log(a);
+      //     if (a.status == 200) {
+      //       this.createList();
+      //       console.log("success");
+      //       this.detailPopup = false;
+      //     } else {
+      //       this.isError = true;
+      //     }
+      //   })
+      //   .catch((error) => {
+      //     console.warn("error", error);
+      //   });
+      this.detailPopup = false;
     },
     submitForm() {
       let submitForm = {
@@ -424,31 +447,31 @@ export default {
         },
       };
       console.log("submit", submitForm);
-      // fetch(training_job_url, {
-      //   method: "POST",
-      //   headers: {
-      //     "Accept": "application/json",
-      //     "Content-Type": "application/json",
-      //     "Authorization": "Bearer " + window.localStorage.getItem("token"),
-      //   },
-      //   body: JSON.stringify(submitForm),
-      // })
-      //   .then(async (resp) => {
-      //     const a = await resp.json();
-      //     console.log(a);
-      //     if (a.status == 201) {
-      //       // this.createList();
-      //       // window.localStorage.setItem("url", null);
-      //       console.log("success");
+      fetch(training_job_url, {
+        method: "POST",
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + window.localStorage.getItem("token"),
+        },
+        body: JSON.stringify(submitForm),
+      })
+        .then(async (resp) => {
+          const a = await resp.json();
+          console.log(a);
+          if (a.status == 201) {
+            // this.createList();
+            // window.localStorage.setItem("url", null);
+            console.log("success");
       this.addPopup = false;
-      //     } else {
-      //       this.isError = true;
-      //     }
-      //   })
-      //   .catch((error) => {
-      //     console.warn("error", error);
-      //   });
-    }, //DEBUG 存入storage 可解決
+          } else {
+            this.isError = true;
+          }
+        })
+        .catch((error) => {
+          console.warn("error", error);
+        });
+    }, 
 
     resetForm(formName) {
       this.$refs[formName].resetFields();
@@ -480,7 +503,7 @@ export default {
       })
         .then(async (resp) => {
           const a = await resp.json();
-          console.log("get", a);
+          console.log("getDataset", a);
           if (a.status == 200) {
             this.datasets = a.data;
           } else {
@@ -491,6 +514,26 @@ export default {
           console.warn("error", error);
         });
     },
+    getPreTrainList(){
+      fetch(training_job_url, {
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + window.localStorage.getItem("token"),
+        },
+      })
+        .then(async (resp) => {
+          const a = await resp.json();
+          console.log("getList", a);
+          if (a.status == 200) {
+            this.pretrainList = a.data;
+          } else {
+            this.isError = true;
+          }
+        })
+        .catch((error) => {
+          console.warn("error", error);
+        });
+    }
   },
   computed: {
     onRoutes() {
@@ -498,35 +541,22 @@ export default {
     },
 
     filteredList() {
-      let result = this.items;
+      let result = this.pretrainList;
       const reset = result.map((o) => ({ ...o })); // var reset = JSON.parse( JSON.stringify(result) );
       if (!this.search) {
         return result;
       }
       const search = this.search.toLowerCase();
-      const filter1 = (item) => {
-        if (item.subs) {
-          item.subs = item.subs.filter((sub) =>
-            sub.title.toLowerCase().includes(search)
-          );
-        }
-        return item;
+      const filter = (list) => {
+        list = list.name.toLowerCase().includes(search);
+        return list;
       };
-
-      const filter2 = (item) => {
-        if (item.subs) {
-          item =
-            item.title.toLowerCase().includes(search) || item.subs.length !== 0;
-        } else {
-          item = item.title.toLowerCase().includes(search);
-        }
-        return item;
-      };
-      return reset.map(filter1).filter(filter2);
+      return reset.filter(filter);
     },
   },
   created() {
     this.getDataset();
+    this.getPreTrainList();
   },
 };
 </script>
@@ -703,15 +733,16 @@ img {
 }
 
 .train_date {
-  width: 120px;
-  height: 30px;
+  width: auto;
+  height: auto;
   font-size: 18px;
-  margin: 0;
+  font-weight: normal;
+  margin: 5px 20px;
   padding: 0px;
   line-height: 40px;
-  position: absolute;
-  right: 0px;
-  top: 10px;
+  position: relative;
+  float: right;
+  right: 10px;
   color: #7f7f7f;
 }
 .save_btn {
