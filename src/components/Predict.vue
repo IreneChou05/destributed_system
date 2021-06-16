@@ -397,7 +397,7 @@ export default {
         headers: {
           "Accept": "application/json",
           "Content-Type": "application/json",
-          "token": "sampleToken",
+          "token": this.detail.token,
         },
         body: JSON.stringify(submitForm),
       })
@@ -614,7 +614,7 @@ export default {
     datasetFilter(){
       let result = this.datasets;
       const filter = (item) => {
-        if(item.target == ""){
+        if(item.target == ""||item.target == null){
           return item;
         }
       };

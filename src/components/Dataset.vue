@@ -297,13 +297,13 @@ export default {
             trigger: "change",
           },
         ],
-        target: [
-          {
-            required: true,
-            message: "Please enter the target columnId",
-            trigger: "blur",
-          },
-        ],
+        // target: [
+        //   {
+        //     required: true,
+        //     message: "Please enter the target columnId",
+        //     trigger: "blur",
+        //   },
+        // ],
       },
     };
   },

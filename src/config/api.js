@@ -1,10 +1,12 @@
-import { baseUrl } from "./env";
-import { DMSUrl } from "./env";
+// import { baseUrl } from "./env";
+// import { DMSUrl } from "./env";
 // import { CMSUrl } from "./env";
 
 // let AS_url = '54.64.87.19:8083' + baseUrl;
 let userUrl = baseUrl + '/users'
 let storageUrl = DMSUrl + '/storage';
+let baseUrl = 'http://54.64.87.19:8083/'
+let DMSUrl = 'http://13.230.8.190:8081/'
 let CMSUrl = 'http://54.199.27.232:8082/'
 
 //user Api
