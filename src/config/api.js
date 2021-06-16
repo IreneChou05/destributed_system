@@ -5,7 +5,7 @@ import { DMSUrl } from "./env";
 // let AS_url = '54.64.87.19:8083' + baseUrl;
 let userUrl = baseUrl + '/users'
 let storageUrl = DMSUrl + '/storage';
-let CMSUrl = 'http://13.231.108.172:8082/'
+let CMSUrl = 'http://54.199.27.232:8082/'
 
 //user Api
 export const user_signup_url = userUrl + '/signUp' ;
