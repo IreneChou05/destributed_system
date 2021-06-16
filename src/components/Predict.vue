@@ -10,8 +10,6 @@
         :class="{ openSideBar: show }"
         class="el-menu-sideBar"
         mode="vertical"
-        @open="handleOpen"
-        @close="handleClose"
         active-text-color="#ffd04b"
         :unique-opened="true"
         default-active=""
@@ -57,152 +55,222 @@
     </div>
     <div id="canvas" class="canvas"></div>
     <div class="model_view" :class="{ model_view2: !show }">
-      <el-form :model="form" ref="form">
-        <el-card id="model_blank" class="model_blank">
-          <el-form-item>
-            <el-input
-              class="title_input"
-              type="text"
-              prop="service_title"
-              v-model="form.service_title"
-              placeholder="TITLE"
-              suffix-icon="el-icon-edit"
-            />
-          </el-form-item>
-          <hr />
-          <el-form-item>
-            <label>Model:</label>
-            <el-select
-              v-model="form.model_name"
-              prop="model_name"
-              filterable
-              clearable
-              placeholder="Choose Model"
-              @change="setModel"
-              loading-text="Loading"
-              no-match-text="No Match Data"
-              no-data-text="No Data"
-            >
-              <el-option
-                v-for="(model, i) in model"
-                :index="i"
-                :key="i"
-                :label="model.name"
-                :value="i"
-              >
-                <span style="float: left; font-size: 20px">{{
-                  model.name
-                }}</span>
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item>
-            <label>Add Data:</label>
-            <el-select
-              v-model="form.data_label"
-              prop="data_label"
-              filterable
-              clearable
-              placeholder="Choose"
-              @change="setData"
-              @clear="
-                fillShow = false;
-                uploadShow = false;
-              "
-              loading-text="Loading"
-              no-match-text="No Match Data"
-              no-data-text="No Data"
-            >
-              <el-option
-                v-for="(method, i) in upload_method"
-                :index="i"
-                :key="i"
-                :label="method.label"
-                :value="method.value"
-              >
-                <i
-                  style="font-size: 16px; margin-right: 10px"
-                  :class="method.icon"
-                ></i>
-                <span style="font-size: 20px">{{ method.label }}</span>
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <!-- upload popup -->
-          <el-card
-            shadow="never"
-            class="card_close"
-            :class="{ cardUpload_open: uploadShow }"
-          >
-            <div class="upload_btn" @click="$refs.file.click()">
-              <input
-                type="file"
-                ref="file"
-                @change="fileUpload()"
-                style="display: none"
-                accept=".csv"
-              />
-              <img class="upload_img" src="@/assets/icon/upload.png" />UPLOAD
-            </div>
-            <el-form-item style="display: inline-block" prop="file_name">
-              <label> File Name: {{ form.file_name }}</label>
-            </el-form-item>
-          </el-card>
-          <!-- fillup popup -->
-          <el-card
-            shadow="never"
-            class="card_close"
-            :class="{ cardFill_open: fillShow }"
-          >
-            <div class="add_column">
-              <el-form-item
-                v-for="(input, i) in form.inputs"
-                :key="i"
-                :props="'input.' + i"
-              >
-                <el-input
-                  placeholder="Column"
-                  prefix-icon="el-icon-files"
-                  v-model="input.col"
-                  clearable
-                  class="add_input"
-                >
-                </el-input>
-
-                <el-input
-                  placeholder="Value"
-                  prefix-icon="el-icon-edit"
-                  v-model="input.val"
-                  class="add_input"
-                >
-                </el-input>
-                <el-button
-                  type="danger"
-                  icon="el-icon-delete"
-                  circle
-                  @click="removeInput(input)"
-                ></el-button>
-                <el-button
-                  type="warning"
-                  icon="el-icon-plus"
-                  circle
-                  @click="addInput"
-                ></el-button>
-              </el-form-item>
-            </div>
-          </el-card>
+      <template v-for="(card, i) in serviceList">
+        <el-card
+          shadow="hover"
+          id="model_blank"
+          class="model_blank"
+          :index="i"
+          :key="i"
+          @click.native="showDetail(i)"
+        >
+        <h1>{{card.name}}</h1>
+        <p class="model_date">{{card.createdAt}}</p>
         </el-card>
-        <div id="send_btn" class="send_btn" @click="submitInput()">OK</div>
-      </el-form>
-      <el-card id="result_blank" class="result_blank">
-        <h1>RESULT</h1>
-        <hr />
-        <label>{{ result }}</label>
-      </el-card>
+      </template>
     </div>
+    <el-button class="add_btn" circle @click="addPopup = true"
+      ><i class="el-icon-plus" style="font-size: 25px"
+    /></el-button>
+
+    <!-- add service popup -->
+    <el-dialog
+      custom-class="model_blank"
+      title="Create Service"
+      :visible.sync="addPopup"
+      width="60%"
+      append-to-body
+      center
+      @closed="resetForm('form')"
+    >
+      <el-form :model="form" :rules="rules" ref="form" label-width="auto">
+        <el-form-item prop="service_title">
+          <el-input
+            class="title_input"
+            type="text"
+            v-model="form.service_title"
+            placeholder="TITLE"
+            suffix-icon="el-icon-edit"
+          />
+        </el-form-item>
+        <hr />
+        <el-form-item prop="upload_model">
+          <label>Model:</label>
+          <el-select
+            v-model="form.upload_model"
+            filterable
+            clearable
+            placeholder="Choose Model"
+            loading-text="Loading"
+            no-match-text="No Match Data"
+            no-data-text="No Data"
+          >
+            <el-option
+              v-for="(model, i) in modelFilter"
+              :index="i"
+              :key="i"
+              :label="model.name"
+              :value="model.id"
+            >
+              <span style="float: left; font-size: 20px">{{ model.name }}</span>
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item style="text-align: right; margin-top: 50px">
+          <el-button type="primary" @click="submitService">ADD</el-button>
+          <el-button @click="resetForm('form')">RESET</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
+
+    <!-- set service data -->
+    <el-dialog
+      custom-class="model_blank"
+      title="Set Service"
+      :visible.sync="setPopup"
+      width="60%"
+      append-to-body
+      center
+      @closed="resetForm('form')"
+    >
+      <el-form :model="form" :rules="rules" ref="form" label-width="auto">
+        <el-form-item prop="dataUrl">
+          <label>Add Data:</label>
+          <el-select
+            v-model="form.dataUrl"
+            filterable
+            clearable
+            placeholder="Choose"
+            @change="setData"
+            @clear="
+              fillShow = false;
+              uploadShow = false;
+            "
+            loading-text="Loading"
+            no-match-text="No Match Data"
+            no-data-text="No Data"
+          >
+            <el-option
+              v-for="(dataset, i) in datasets"
+              :index="i"
+              :key="i"
+              :label="dataset.name"
+              :value="dataset.fileUrl"
+            >
+              <span style="font-size: 20px">{{ dataset.name }}</span>
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <!-- upload popup -->
+        <!-- <el-card
+          shadow="never"
+          class="card_close"
+          :class="{ cardUpload_open: uploadShow }"
+        >
+          <div class="upload_btn" @click="$refs.file.click()">
+            <input
+              type="file"
+              ref="file"
+              @change="fileUpload()"
+              style="display: none"
+              accept=".csv"
+            />
+            <img class="upload_img" src="@/assets/icon/upload.png" />UPLOAD
+          </div>
+          <el-form-item style="display: inline-block" prop="file_name">
+            <label> File Name: {{ form.file_name }}</label>
+          </el-form-item>
+          <el-button
+                type="warning"
+                icon="el-icon-check"
+                circle
+                style="float:right"
+                @click="batchUpload()"
+              ></el-button> -->
+        <!-- </el-card> -->
+        <!-- fillup popup -->
+        <!-- <el-card
+          shadow="never"
+          class="card_close"
+          :class="{ cardFill_open: fillShow }"
+        >
+          <div class="add_column">
+            <el-form-item
+              v-for="(input, i) in form.inputs"
+              :key="i"
+              :props="'input.' + i"
+            >
+              <el-input
+                placeholder="Column"
+                prefix-icon="el-icon-files"
+                v-model="input.col"
+                clearable
+                class="add_input"
+              >
+              </el-input>
+
+              <el-input
+                placeholder="Value"
+                prefix-icon="el-icon-edit"
+                v-model="input.val"
+                class="add_input"
+              >
+              </el-input>
+              <el-button
+                type="danger"
+                icon="el-icon-delete"
+                circle
+                @click="removeInput(input)"
+              ></el-button>
+              <el-button
+                type="warning"
+                icon="el-icon-plus"
+                circle
+                @click="addInput"
+              ></el-button>
+            </el-form-item>
+          </div>
+        </el-card> -->
+        <el-form-item style="text-align: right; margin-top: 50px">
+          <el-tooltip class="item" effect="dark" content="Delete Service" placement="bottom">
+          <el-popconfirm
+            placement="bottom"
+            confirm-button-text="YES"
+            confirm-button-type="warning"
+            cancel-button-text="CANCEL"
+            title="Delete this training ?"
+            @confirm="stopService(detail.id)"
+          >
+            <el-button
+              slot="reference"
+              type="danger"
+              icon="el-icon-delete"
+              round
+              style="float:left"
+            ></el-button>
+          </el-popconfirm>
+        </el-tooltip>
+          <el-button type="primary" @click="batchUpload">
+            Start
+          </el-button>
+        </el-form-item>
+        <!-- result popUp -->
+        <el-card shadow="never"  class="card_close" :class="{ result_blank: resultShow }">
+          <h1>RESULT</h1>
+          <hr />
+          <label>{{ result }}</label>
+        </el-card>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 <script>
+import { datasets_url } from "@/config/api.js";
+import { prediction_stop_url } from "@/config/api.js";
+import { prediction_start_url } from "@/config/api.js";
+import { prediction_service_url } from "@/config/api.js";
+import { prediction_batch_url } from "@/config/api.js";
+import { training_job_url } from "@/config/api.js";
 export default {
   data() {
     return {
@@ -212,9 +280,16 @@ export default {
       file_size: "",
       result: "Predict Result...",
       show: true,
+      addPopup: false,
+      setPopup: false,
       uploadShow: false,
       fillShow: false,
+      resultShow: false,
       activeIndex: "1",
+      detail: [
+      ],
+      model:[],
+      datasets:[],
       items: [
         {
           icon: require("@/assets/icon/home.png"),
@@ -240,60 +315,6 @@ export default {
           title: "DATASET",
           path: "dataset",
         },
-        { 
-          icon: require("@/assets/icon/magic-wand.png"),
-          index: "5",
-          title: "SERVICE",
-          subs: [
-            {
-              index: "5-1",
-              title: "one",
-             
-            },
-            {
-              index: "5-2",
-              title: "two",
-              
-            },
-            {
-              index: "5-3",
-              title: "three",
-              
-            },
-          ],
-        },
-      ],
-      model: [
-        {
-          name: "one",
-          url: "",
-          token: "",
-          models: ["1", "2"],
-        },
-        {
-          name: "two",
-          url: "",
-          token: "",
-          models: [],
-        },
-        {
-          name: "three",
-          url: "",
-          token: "",
-          models: [],
-        },
-        {
-          name: "four",
-          url: "",
-          token: "",
-          models: [],
-        },
-        {
-          name: "five",
-          url: "",
-          token: "",
-          models: [],
-        },
       ],
       upload_method: [
         {
@@ -309,11 +330,11 @@ export default {
       ],
       form: {
         service_title: "",
-        upload_model: [],
+        upload_model: "",
         inputs: [{ col: "", val: "" }],
         file_name: "",
-        model_name: "",
-        data_label: "",
+        model_id: "",
+        dataUrl: "",
       },
       rules: {
         service_title: [
@@ -323,14 +344,14 @@ export default {
             trigger: "blur",
           },
         ],
-        model_name: [
+        upload_model: [
           {
             required: true,
             message: "please choose a model ",
             trigger: "change",
           },
         ],
-        data_label: [
+        dataUrl: [
           {
             required: true,
             message: "please choose a method to upload data ",
@@ -343,6 +364,8 @@ export default {
         ],
       },
       submit: [],
+      serviceList: {},
+      setForm: {},
     };
   },
   methods: {
@@ -358,12 +381,39 @@ export default {
     fileUpload() {
       let file = this.$refs.file.files[0];
       this.file = file;
-      this.form.file_name = file.name;
-      this.file_size = file.size + "  bytes";
-      this.form.inputs = file;
+    },
+    batchUpload(){
+      let submitForm = {
+        dataUrl: this.form.dataUrl
+      }
+      console.info("submit", submitForm);
+      fetch(prediction_batch_url +'/predictBatch', {
+        method: "POST",
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + window.localStorage.getItem("token"),
+        },
+        body: JSON.stringify(submitForm),
+      })
+        .then(async (resp) => {
+          const a = await resp.json();
+          console.log(a);
+          if (a.status == 201) {
+            // window.localStorage.setItem("url", a.data.url);
+            this.result = a.data.resultUrl;
+            console.log("success");
+            // this.detailPopup = false;
+          } else {
+            this.isError = true;
+          }
+        })
+        .catch((error) => {
+          console.warn("error", error);
+        });
     },
     setModel(index) {
-      this.form.upload_model = this.model[index].models;
+      this.form.model_id = this.model[index].id;
     },
     setData(command) {
       if (command == "upload") {
@@ -389,26 +439,134 @@ export default {
         val: "",
       });
     },
-    submitInput() {
-      this.submit.title = this.form.service_title;
-      this.submit.model = this.form.upload_model;
-      this.submit.input = this.form.inputs;
-      console.log("input", this.submit);
-      this.resetForm();
+    submitService() {
+      let submitForm = {
+        name: this.form.service_title,
+        tjId: this.form.upload_model,
+      };
+      this.items[0].subs = submitForm;
+      console.log("submit", submitForm);
+      fetch(prediction_start_url, {
+        method: "POST",
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + window.localStorage.getItem("token"),
+        },
+        body: JSON.stringify(submitForm),
+      })
+        .then(async (resp) => {
+          const a = await resp.json();
+          console.log(a);
+          if (a.status == 201) {
+            this.getService();
+            // window.localStorage.setItem("url", null);
+            console.log("success");
+            this.addPopup = false;
+          } else {
+            this.isError = true;
+          }
+        })
+        .catch((error) => {
+          console.warn("error", error);
+        });
     },
-    resetForm() {
-      //reset 要想更好的方式
-      this.uploadShow = false;
-      this.fillShow = false;
-      this.form.service_title = "";
-      this.form.inputs = [{ col: "", val: "" }];
-      this.form.upload_model = [];
-      this.model_name = "";
-      this.data_label = "";
+    stopService(id) {
+      fetch(prediction_stop_url + `/${id}`, {
+        method: "DELETE",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + window.localStorage.getItem("token"),
+        },
+      })
+        .then(async (resp) => {
+          const a = await resp.json();
+          console.info(a);
+          if (a.status == 200) {
+            this.getService();
+            console.log("success");
+            this.detailPopup = false;
+          } else {
+            this.isError = true;
+          }
+        })
+        .catch((error) => {
+          console.warn("error", error);
+        });
+      this.detailPopup = false;
+    },
+    resetForm(formName) {
+      this.$refs[formName].resetFields();
     },
     jumpPage(String) {
       this.$router.push({ path: `/${String}` });
     },
+    showDetail(i) {
+      this.setPopup = true;
+      this.detail = this.serviceList[i];
+      return this.detail;
+    },
+    getModel() {
+      fetch(training_job_url, {
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + window.localStorage.getItem("token"),
+        },
+      })
+        .then(async (resp) => {
+          const a = await resp.json();
+          console.log("getModel", a);
+          if (a.status == 200) {
+            this.model = a.data;
+          } else {
+            this.isError = true;
+          }
+        })
+        .catch((error) => {
+          console.warn("error", error);
+        });
+    },
+    getService() {
+      fetch(prediction_service_url, {
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + window.localStorage.getItem("token"),
+        },
+      })
+        .then(async (resp) => {
+          const a = await resp.json();
+          console.log("getService", a);
+          if (a.status == 200) {
+            this.serviceList = a.data;
+          } else {
+            this.isError = true;
+          }
+        })
+        .catch((error) => {
+          console.warn("error", error);
+        });
+    },
+    getDataset(){
+      fetch(datasets_url, {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + window.localStorage.getItem("token"),
+      },
+    })
+      .then(async (resp) => {
+        const a = await resp.json();
+        console.log("getDataset", a);
+        if (a.status == 200) {
+          this.datasets = a.data;
+        } else {
+          this.isError = true;
+        }
+      })
+      .catch((error) => {
+        console.warn("error", error);
+      });
+    }
   },
   computed: {
     onRoutes() {
@@ -442,9 +600,19 @@ export default {
       };
       return reset.map(filter1).filter(filter2);
     },
-    // startPredict(){//TODO
-    //   this.file.submit()
-    // }
+    modelFilter() {
+      let result = this.model;
+      const filter = (item) => {
+        item = item.state.includes("Training"); //之後要改成Finished
+        return item;
+      };
+      return result.filter(filter);
+    },
+  },
+  created() {
+    this.getModel();
+    this.getDataset();
+    this.getService();
   },
 };
 </script>
@@ -529,25 +697,6 @@ img {
   padding: 0px;
   display: inline;
 }
-/* .headBar {
-  width: 100%;
-  height: 50px;
-  display: flex;
-  background-color: #000000;
-}
-
-.title {
-  background-color: #ffdb15;
-  color: #000;
-  height: 100%;
-  min-width: 200px;
-  width: 200px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  letter-spacing: 5px;
-  font-size: 17px;
-} */
 
 .el-menu-sideBar hr {
   margin: 15px 15px;
@@ -570,6 +719,7 @@ img {
   color: #000000;
   background-color: #ffffff;
 }
+
 .model_view {
   position: absolute;
   width: 65vw;
@@ -594,17 +744,22 @@ img {
   display: none;
 }
 .model_blank {
-  height: auto;
-  width: 700px;
-  overflow: auto;
+  height: 150px;
+  width: 750px;
+  z-index: -1;
+  overflow-x: hidden;
   border-bottom: 1px #000000;
   position: relative;
   font: inherit;
   background-color: #ffffff;
-  border-radius: 15px;
+  /* box-shadow: 0px 0px 5px gray; */
   text-align: left;
-  z-index: 100;
-  margin: 30px auto 20px auto;
+  margin: 20px auto;
+  /*以下四種為各種瀏覽器禁止反白 */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -o-user-select: none;
+  user-select: none;
 }
 .model_blank h1,
 .result_blank h1 {
@@ -657,6 +812,27 @@ img {
   left: 40px;
   display: inline-block;
 }
+.model_date {
+  width: auto;
+  height: auto;
+  font-size: 18px;
+  font-weight: normal;
+  margin: 5px 20px;
+  padding: 0px;
+  line-height: 40px;
+  position: relative;
+  float: right;
+  right: 10px;
+  color: #7f7f7f;
+}
+.add_btn {
+  position: absolute;
+  background-color: lightgreen;
+  border: none;
+  margin: 0px;
+  bottom: 40px;
+  right: 40px;
+}
 .upload_img {
   display: block;
   width: 20px;
@@ -694,9 +870,9 @@ img {
 
 .result_blank {
   height: auto;
-  width: 700px;
+  width: auto;
   top: 10%;
-  z-index: -1;
+  z-index: 100;
   overflow-x: hidden;
   border-bottom: 1px #000000;
   position: relative;
@@ -708,7 +884,7 @@ img {
   overflow: auto;
 }
 .title_input {
-  min-width: 300px;
+  width: auto;
   font-size: 30px;
 }
 /*覆蓋區*/
@@ -740,6 +916,15 @@ div >>> .title_input input {
 }
 .el-form-item {
   margin: 0px;
+}
+div >>> .el-dialog__title {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  color: #2c3e50;
+  font-size: 40px;
+  line-height: 40px;
+}
+.el-dialog__wrapper::-webkit-scrollbar {
+  display: none;
 }
 </style>
 

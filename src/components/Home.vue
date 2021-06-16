@@ -2,7 +2,7 @@
 <template>
   <div id="app">
     <!-- change to 'logout' after finish -->
-    <div id="login" class="login" @click="jumpPage('login')">Login</div>
+    <div id="login" class="login" @click="jumpPage('')">Logout</div>
     <div class="home">
       <h1>{{ message }}</h1>
       <div class="menu">

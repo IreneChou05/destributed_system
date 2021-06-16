@@ -10,13 +10,21 @@ module.exports = {
             }
         },
         '/dms':{
-          target: 'http://13.115.91.163:8081/',
+          target: 'http://13.230.8.190:8081/',
           changeOrigin: true,
             ws: false,
             pathRewrite: {
                 '^/dms': ''
             }
-        }
+        },
+        '/cms':{
+          target: 'http://3.113.3.57:8082/',
+          changeOrigin: true,
+            ws: false,
+            pathRewrite: {
+                '^/cms': ''
+            }
+        },
       }
     },
   publicPath: process.env.NODE_ENV === 'production'

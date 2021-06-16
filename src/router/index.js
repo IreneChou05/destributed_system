@@ -11,7 +11,7 @@ Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/',//change to '/home' after finish
+    path: '/home',//change to '/home' after finish
     name: 'Home',
     component: Home
   },
@@ -31,7 +31,7 @@ const routes = [
     component: Dataset
   },
   {
-    path: '/login',//change to '/' after finish
+    path: '/',//change to '/' after finish
     name: 'Login',
     component: Login
   },

@@ -1,5 +1,6 @@
 import { baseUrl } from "./env";
-import { DMSUrl } from "./env"
+import { DMSUrl } from "./env";
+// import { CMSUrl } from "./env";
 
 // let AS_url = '54.64.87.19:8083' + baseUrl;
 let userUrl = baseUrl + '/users'
@@ -16,3 +17,9 @@ export const file_upload_url = storageUrl + '/upload';
 
 //training Api
 export const training_job_url = DMSUrl + '/trainingJobs';
+
+//predict api
+export const prediction_service_url = DMSUrl + '/predictionServices';
+export const prediction_start_url = 'http://3.113.3.57:8082' + '/predictionServices';
+export const prediction_stop_url = 'http://3.113.3.57:8082' + '/predictionServices';
+export const prediction_batch_url = DMSUrl + '/predictService';

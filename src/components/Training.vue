@@ -104,7 +104,9 @@
           <el-input v-model="addForm.name"></el-input>
         </el-form-item>
         <el-form-item label="Dataset" prop="datasetUrl">
-          <el-select v-model="addForm.datasetUrl" placeholder="Choose">
+          <el-select v-model="addForm.datasetUrl" placeholder="Choose" loading-text="Loading"
+              no-match-text="No Match Data"
+              no-data-text="No Data">
             <el-option
               v-for="(dataset, i) in datasets"
               :index="i"
@@ -170,7 +172,7 @@
           confirm-button-type="warning"
           cancel-button-text="CANCEL"
           title="Save this training ?"
-          @confirm="saveModel(detail.userId)"
+          @confirm="saveModel(detail.id)"
         >
           <el-button class="save_btn" slot="reference" type="success" circle
             ><i class="el-icon-check"
@@ -294,69 +296,69 @@ export default {
         ],
       },
       pretrainList: [
-        // {
-        //   id: "",
-        //   name: "name1",
-        //   state: "Training",
-        //   datasetUrl: "url",
-        //   modelUrl: "url",
-        //   valLoss: 1.1,
-        //   trainLoss: 2.2,
-        //   valAcc: 3.3,
-        //   trainAcc: 4.4,
-        //   createdAt: "2021-06-12 09:09:09",
-        //   userId: "id",
-        //   preConfig: {
-        //     cmds: [""],
-        //   },
-        //   mlConfig: {
-        //     task: "classification",
-        //     validateRatio: 0.2,
-        //     modelTag: "nn",
-        //   },
-        // },
-        // {
-        //   id: "",
-        //   name: "name2",
-        //   state: "Finish",
-        //   datasetUrl: "url",
-        //   modelUrl: "url",
-        //   valLoss: 1.1,
-        //   trainLoss: 2.2,
-        //   valAcc: 3.3,
-        //   trainAcc: 4.4,
-        //   createdAt: "2021-06-12 09:09:09",
-        //   userId: "id",
-        //   preConfig: {
-        //     cmds: [""],
-        //   },
-        //   mlConfig: {
-        //     task: "classification",
-        //     validateRatio: 0.2,
-        //     modelTag: "nn",
-        //   },
-        // },
-        // {
-        //   id: "",
-        //   name: "name3",
-        //   state: "Finish",
-        //   datasetUrl: "url",
-        //   modelUrl: "url",
-        //   valLoss: 1.1,
-        //   trainLoss: 2.2,
-        //   valAcc: 3.3,
-        //   trainAcc: 4.4,
-        //   createdAt: "2021-06-12 09:09:09",
-        //   userId: "id",
-        //   preConfig: {
-        //     cmds: [""],
-        //   },
-        //   mlConfig: {
-        //     task: "classification",
-        //     validateRatio: 0.2,
-        //     modelTag: "nn",
-        //   },
-        // },
+        {
+          id: "",
+          name: "name1",
+          state: "Training",
+          datasetUrl: "url",
+          modelUrl: "url",
+          valLoss: 1.1,
+          trainLoss: 2.2,
+          valAcc: 3.3,
+          trainAcc: 4.4,
+          createdAt: "2021-06-12 09:09:09",
+          userId: "id",
+          preConfig: {
+            cmds: [""],
+          },
+          mlConfig: {
+            task: "classification",
+            validateRatio: 0.2,
+            modelTag: "nn",
+          },
+        },
+        {
+          id: "",
+          name: "name2",
+          state: "Finished",
+          datasetUrl: "url",
+          modelUrl: "url",
+          valLoss: 1.1,
+          trainLoss: 2.2,
+          valAcc: 3.3,
+          trainAcc: 4.4,
+          createdAt: "2021-06-12 09:09:09",
+          userId: "id",
+          preConfig: {
+            cmds: [""],
+          },
+          mlConfig: {
+            task: "classification",
+            validateRatio: 0.2,
+            modelTag: "nn",
+          },
+        },
+        {
+          id: "",
+          name: "name3",
+          state: "Finished",
+          datasetUrl: "url",
+          modelUrl: "url",
+          valLoss: 1.1,
+          trainLoss: 2.2,
+          valAcc: 3.3,
+          trainAcc: 4.4,
+          createdAt: "2021-06-12 09:09:09",
+          userId: "id",
+          preConfig: {
+            cmds: [""],
+          },
+          mlConfig: {
+            task: "classification",
+            validateRatio: 0.2,
+            modelTag: "nn",
+          },
+        },
       ],
       detail: [
         {
@@ -393,7 +395,7 @@ export default {
     add(subItem) {
       this.components.push(subItem);
     },
-    saveModel() {
+    saveModel(id) {
       let saveForm = {
         userId: this.detail.userId,
         modelUrl: this.detail.modelUrl,
@@ -405,10 +407,34 @@ export default {
           valLossVar: this.detail.valLossVar, // regression only
         },
       };
-      console.log("save", saveForm);
+      // fetch(training_job_url+`/${id}`+"/report", {
+      //   method: "PATCH",
+      //   headers: {
+      //     "Accept": "application/json",
+      //     "Content-Type": "application/json",
+      //     "Authorization": "Bearer " + window.localStorage.getItem("token"),
+      //   },
+      //   body: JSON.stringify(submitForm),
+      // })
+      //   .then(async (resp) => {
+      //     const a = await resp.json();
+      //     console.info(a);
+      //     if (a.status == 201) {
+      //       // this.createList();
+      //       // window.localStorage.setItem("url", null);
+      //       console.log("success");
+      // this.addPopup = false;
+      //     } else {
+      //       this.isError = true;
+      //     }
+      //   })
+      //   .catch((error) => {
+      //     console.warn("error", error);
+      //   });
+      console.info("save", saveForm,training_job_url+`/${id}`+"/report");
     },
     remove(id) {
-      console.log("id",training_job_url+`/${id}`)
+      console.info("id",training_job_url+`/${id}`)
       // fetch(training_job_url+`/${id}`, {
       //   method: "DELETE",
       //   headers: {
@@ -419,7 +445,7 @@ export default {
       // })
       //   .then(async (resp) => {
       //     const a = await resp.json();
-      //     console.log(a);
+      //     console.info(a);
       //     if (a.status == 200) {
       //       this.createList();
       //       console.log("success");
@@ -446,7 +472,7 @@ export default {
           modelTag: this.addForm.mlConfig_modelTag,
         },
       };
-      console.log("submit", submitForm);
+      console.info("submit", submitForm);
       fetch(training_job_url, {
         method: "POST",
         headers: {
@@ -458,7 +484,7 @@ export default {
       })
         .then(async (resp) => {
           const a = await resp.json();
-          console.log(a);
+          console.info(a);
           if (a.status == 201) {
             // this.createList();
             // window.localStorage.setItem("url", null);
@@ -503,7 +529,7 @@ export default {
       })
         .then(async (resp) => {
           const a = await resp.json();
-          console.log("getDataset", a);
+          console.info("getDataset", a);
           if (a.status == 200) {
             this.datasets = a.data;
           } else {
@@ -523,7 +549,7 @@ export default {
       })
         .then(async (resp) => {
           const a = await resp.json();
-          console.log("getList", a);
+          console.info("getList", a);
           if (a.status == 200) {
             this.pretrainList = a.data;
           } else {
@@ -556,7 +582,7 @@ export default {
   },
   created() {
     this.getDataset();
-    this.getPreTrainList();
+    // this.getPreTrainList();
   },
 };
 </script>

@@ -154,11 +154,11 @@
       @closed="page = 1"
     >
       <h1>{{ detail.name }}</h1>
-      <p class="detail_blank">Tasks: {{ detail.des }}</p>
-      <p class="detail_blank">Tasks: {{ detail.tasks }}</p>
-      <p class="detail_blank">Files: {{ detail.files }}</p>
-      <p class="detail_blank">Columns: {{ detail.columns }}</p>
-      <p class="detail_blank">Date: {{ detail.date }}</p>
+      <p class="detail_blank">Description: {{ detail.description }}</p>
+      <p class="detail_blank">Tasks: {{ detail.taskType }}</p>
+      <p class="detail_blank">Files: {{ detail.fileUrl }}</p>
+      <p class="detail_blank">Test: {{ detail.test }}</p>
+      <p class="detail_blank">Date: {{ detail.createdAt }}</p>
       <div style="text-align: right">
         <el-tooltip class="item" effect="dark" content="Delete" placement="top">
           <el-popconfirm
@@ -185,7 +185,7 @@
         highlight-current-row
       >
         <el-table-column
-          v-for="{ prop, label } in detail.col"
+          v-for="{ prop, label } in detail.target"
           :key="prop"
           :prop="prop"
           :label="label"
@@ -214,7 +214,7 @@ export default {
       addPopup: false,
       detailPopup: false,
       page: 1, //初始頁
-      pageSize: 10,
+      pageSize: 100,
       total: 0,
       search: "",
       message: "DATASET",
@@ -384,7 +384,7 @@ export default {
           console.log(a);
           if (a.status == 200) {
             this.createList();
-            console.log("success");
+            console.log("success",datasets_url+`/${id}`);
             this.addPopup = false;
           } else {
             this.isError = true;
@@ -420,7 +420,7 @@ export default {
             this.createList();
             window.localStorage.setItem("url", null);
             console.log("success");
-            this.detailPopup = false;
+            this.addPopup = false;
           } else {
             this.isError = true;
           }
@@ -460,7 +460,7 @@ export default {
   computed: {
     pageList() {
       let arr = null;
-      let pageData = this.detail[0].data;
+      let pageData = this.detail[0].rowData;
       if (pageData) {
         arr = pageData.slice(
           this.pageSize * this.page - this.pageSize,
