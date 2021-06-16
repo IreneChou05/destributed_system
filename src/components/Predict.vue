@@ -151,7 +151,7 @@
             no-data-text="No Data"
           >
             <el-option
-              v-for="(dataset, i) in datasets"
+              v-for="(dataset, i) in datasetFilter"
               :index="i"
               :key="i"
               :label="dataset.name"
@@ -274,15 +274,15 @@ import { datasets_url } from "@/config/api.js";
 import { prediction_stop_url } from "@/config/api.js";
 import { prediction_start_url } from "@/config/api.js";
 import { prediction_service_url } from "@/config/api.js";
-import { training_job_url } from "@/config/api.js";
+import { training_list_url } from "@/config/api.js";
 export default {
   data() {
     return {
       search: "",
       message: "PREDICT",
+      result: "",
       file: "",
       file_size: "",
-      result: "",
       show: true,
       addPopup: false,
       setPopup: false,
@@ -390,13 +390,14 @@ export default {
       let submitForm = {
         dataUrl: this.form.dataUrl
       }
-      console.info("submit", submitForm);
-      fetch("https://"+ this.detail.serviceEndpoint, {
+      let reqUrl = "http://"+ this.detail.serviceEndpoint + "/predictBatch";
+      console.info("submit", submitForm, reqUrl,this.detail.token);
+      fetch(reqUrl, {
         method: "POST",
         headers: {
           "Accept": "application/json",
           "Content-Type": "application/json",
-          "Authorization": "Bearer " + window.localStorage.getItem("token"),
+          "token": "sampleToken",
         },
         body: JSON.stringify(submitForm),
       })
@@ -404,10 +405,9 @@ export default {
           const a = await resp.json();
           console.log(a);
           if (a.status == 200) {
-            // window.localStorage.setItem("url", a.data.url);
             this.result = a.data.resultUrl;
+            // this.setPopup = false
             console.log("success");
-            // this.detailPopup = false;
           } else {
             this.isError = true;
           }
@@ -489,7 +489,7 @@ export default {
           if (a.status == 200) {
             this.getService();
             console.log("success");
-            this.detailPopup = false;
+            this.setPopup = false;
           } else {
             this.isError = true;
           }
@@ -511,7 +511,7 @@ export default {
       return this.detail;
     },
     getModel() {
-      fetch(training_job_url, {
+      fetch(training_list_url, {
         method: "GET",
         headers: {
           Authorization: "Bearer " + window.localStorage.getItem("token"),
@@ -606,11 +606,20 @@ export default {
     modelFilter() {
       let result = this.model;
       const filter = (item) => {
-        item = item.state.includes("Training"); //之後要改成Finished
+        item = item.state.includes("Finished"); //之後要改成Finished
         return item;
       };
       return result.filter(filter);
     },
+    datasetFilter(){
+      let result = this.datasets;
+      const filter = (item) => {
+        if(item.target == ""){
+          return item;
+        }
+      };
+      return result.filter(filter);
+    }
   },
   created() {
     this.getModel();

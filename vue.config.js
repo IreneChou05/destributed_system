@@ -18,7 +18,7 @@ module.exports = {
             }
         },
         '/cms':{
-          target: 'http://3.113.3.57:8082/',
+          target: 'http://13.231.108.172:8082/',
           changeOrigin: true,
             ws: false,
             pathRewrite: {

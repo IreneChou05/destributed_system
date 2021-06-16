@@ -129,7 +129,10 @@
           ></el-input>
         </el-form-item>
         <el-form-item label="Config Task" prop="mlConfig_task">
-          <el-input v-model="addForm.mlConfig_task"></el-input>
+          <el-radio-group v-model="addForm.mlConfig_task" required>
+            <el-radio label="regression"></el-radio>
+            <el-radio label="classification"></el-radio>
+          </el-radio-group>
         </el-form-item>
         <el-form-item label="ValidateRatio" prop="mlConfig_validateRatio">
           <el-input
@@ -162,23 +165,6 @@
       <p class="detail_blank">trainLoss: {{ detail.trainLoss }}</p>
       <p class="detail_blank">valAcc: {{ detail.valAcc }}</p>
       <p class="detail_blank">createdAt: {{ detail.createdAt }}</p>
-      <!-- <p class="detail_blank">cmds: {{ detail.preConfig.cmds }}</p>
-      <p class="detail_blank">Task: {{ detail.mlConfig.task }}</p>
-      <p class="detail_blank">validateRatio: {{ detail.mlConfig.validateRatio }}</p>
-      <p class="detail_blank">modelTag: {{ detail.mlConfig.modelTag }}</p> -->
-      <!-- <template v-if="detail.state == 'Finished'">
-        <el-popconfirm
-          confirm-button-text="YES"
-          confirm-button-type="warning"
-          cancel-button-text="CANCEL"
-          title="Save this training ?"
-          @confirm="saveModel(detail.id)"
-        >
-          <el-button class="save_btn" slot="reference" type="success" circle
-            ><i class="el-icon-check"
-          /></el-button>
-        </el-popconfirm> -->
-      <!-- </template> -->
 
       <el-popconfirm
         confirm-button-text="YES"
@@ -198,6 +184,7 @@
 
 <script>
 import {training_job_url} from "@/config/api.js";
+import {training_list_url} from "@/config/api.js";
 import { datasets_url } from "@/config/api.js";
 export default {
   data() {
@@ -233,19 +220,12 @@ export default {
           index: "4",
           title: "DATASET",
           path: "dataset",
-          // subs: [
-          //   {
-          //     index: "2-1",
-          //     title: "From Local",
-          //     icon: require("@/assets/icon/local.png"),
-          //   },
-          // ],
         },
       ],
       addForm: {
         name: "",
         datasetUrl: "",
-        preConfig: "",
+        preConfig: "normalize",
         mlConfig_task: "",
         mlConfig_validateRatio: "",
         mlConfig_modelTag: "",
@@ -296,69 +276,6 @@ export default {
         ],
       },
       pretrainList: [
-        // {
-        //   id: "",
-        //   name: "name1",
-        //   state: "Training",
-        //   datasetUrl: "url",
-        //   modelUrl: "url",
-        //   valLoss: 1.1,
-        //   trainLoss: 2.2,
-        //   valAcc: 3.3,
-        //   trainAcc: 4.4,
-        //   createdAt: "2021-06-12 09:09:09",
-        //   userId: "id",
-        //   preConfig: {
-        //     cmds: [""],
-        //   },
-        //   mlConfig: {
-        //     task: "classification",
-        //     validateRatio: 0.2,
-        //     modelTag: "nn",
-        //   },
-        // },
-        // {
-        //   id: "",
-        //   name: "name2",
-        //   state: "Finished",
-        //   datasetUrl: "url",
-        //   modelUrl: "url",
-        //   valLoss: 1.1,
-        //   trainLoss: 2.2,
-        //   valAcc: 3.3,
-        //   trainAcc: 4.4,
-        //   createdAt: "2021-06-12 09:09:09",
-        //   userId: "id",
-        //   preConfig: {
-        //     cmds: [""],
-        //   },
-        //   mlConfig: {
-        //     task: "classification",
-        //     validateRatio: 0.2,
-        //     modelTag: "nn",
-        //   },
-        // },
-        // {
-        //   id: "",
-        //   name: "name3",
-        //   state: "Finished",
-        //   datasetUrl: "url",
-        //   modelUrl: "url",
-        //   valLoss: 1.1,
-        //   trainLoss: 2.2,
-        //   valAcc: 3.3,
-        //   trainAcc: 4.4,
-        //   createdAt: "2021-06-12 09:09:09",
-        //   userId: "id",
-        //   preConfig: {
-        //     cmds: [""],
-        //   },
-        //   mlConfig: {
-        //     task: "classification",
-        //     validateRatio: 0.2,
-        //     modelTag: "nn",
-        //   },
-        // },
       ],
       detail: [
         {
@@ -434,8 +351,8 @@ export default {
     //   console.info("save", saveForm,training_job_url+`/${id}`+"/report");
     // },
     remove(id) {
-      console.info("id",training_job_url+`/${id}`)
-      fetch(training_job_url+`/${id}`, {
+      console.info("id",training_list_url+`/${id}`)
+      fetch(training_list_url+`/${id}`, {
         method: "DELETE",
         headers: {
           "Accept": "application/json",
@@ -468,7 +385,7 @@ export default {
         },
         mlConfig: {
           task: this.addForm.mlConfig_task,
-          validateRatio: this.addForm.mlConfig_validateRatio,
+          validateRatio: parseFloat(this.addForm.mlConfig_validateRatio) ,
           modelTag: this.addForm.mlConfig_modelTag,
         },
       };
@@ -487,7 +404,6 @@ export default {
           console.info(a);
           if (a.status == 201) {
             this.getPreTrainList();
-            // window.localStorage.setItem("url", null);
             console.log("success");
       this.addPopup = false;
           } else {
@@ -516,7 +432,7 @@ export default {
       this.detailPopup = true;
       this.detail = this.pretrainList[i];
       return this.detail;
-    }, //DEBUG 存入storage 可解決
+    }, 
     jumpPage(String) {
       this.$router.push({ path: `/${String}` });
     },
@@ -541,7 +457,7 @@ export default {
         });
     },
     getPreTrainList(){
-      fetch(training_job_url, {
+      fetch(training_list_url, {
         method: "GET",
         headers: {
           Authorization: "Bearer " + window.localStorage.getItem("token"),
