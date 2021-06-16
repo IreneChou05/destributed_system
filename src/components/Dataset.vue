@@ -228,7 +228,7 @@ export default {
           icon: require("@/assets/icon/home.png"),
           index: "1",
           title: "HOME",
-          path: "",
+          path: "home",
         },
         {
           icon: require("@/assets/icon/spyglass (1).png"),

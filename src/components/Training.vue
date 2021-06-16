@@ -166,7 +166,7 @@
       <p class="detail_blank">Task: {{ detail.mlConfig.task }}</p>
       <p class="detail_blank">validateRatio: {{ detail.mlConfig.validateRatio }}</p>
       <p class="detail_blank">modelTag: {{ detail.mlConfig.modelTag }}</p> -->
-      <template v-if="detail.state == 'Finished'">
+      <!-- <template v-if="detail.state == 'Finished'">
         <el-popconfirm
           confirm-button-text="YES"
           confirm-button-type="warning"
@@ -177,8 +177,8 @@
           <el-button class="save_btn" slot="reference" type="success" circle
             ><i class="el-icon-check"
           /></el-button>
-        </el-popconfirm>
-      </template>
+        </el-popconfirm> -->
+      <!-- </template> -->
 
       <el-popconfirm
         confirm-button-text="YES"
@@ -214,7 +214,7 @@ export default {
           icon: require("@/assets/icon/home.png"),
           index: "1",
           title: "HOME",
-          path: "",
+          path: "home",
         },
         {
           icon: require("@/assets/icon/spyglass (1).png"),
@@ -296,69 +296,69 @@ export default {
         ],
       },
       pretrainList: [
-        {
-          id: "",
-          name: "name1",
-          state: "Training",
-          datasetUrl: "url",
-          modelUrl: "url",
-          valLoss: 1.1,
-          trainLoss: 2.2,
-          valAcc: 3.3,
-          trainAcc: 4.4,
-          createdAt: "2021-06-12 09:09:09",
-          userId: "id",
-          preConfig: {
-            cmds: [""],
-          },
-          mlConfig: {
-            task: "classification",
-            validateRatio: 0.2,
-            modelTag: "nn",
-          },
-        },
-        {
-          id: "",
-          name: "name2",
-          state: "Finished",
-          datasetUrl: "url",
-          modelUrl: "url",
-          valLoss: 1.1,
-          trainLoss: 2.2,
-          valAcc: 3.3,
-          trainAcc: 4.4,
-          createdAt: "2021-06-12 09:09:09",
-          userId: "id",
-          preConfig: {
-            cmds: [""],
-          },
-          mlConfig: {
-            task: "classification",
-            validateRatio: 0.2,
-            modelTag: "nn",
-          },
-        },
-        {
-          id: "",
-          name: "name3",
-          state: "Finished",
-          datasetUrl: "url",
-          modelUrl: "url",
-          valLoss: 1.1,
-          trainLoss: 2.2,
-          valAcc: 3.3,
-          trainAcc: 4.4,
-          createdAt: "2021-06-12 09:09:09",
-          userId: "id",
-          preConfig: {
-            cmds: [""],
-          },
-          mlConfig: {
-            task: "classification",
-            validateRatio: 0.2,
-            modelTag: "nn",
-          },
-        },
+        // {
+        //   id: "",
+        //   name: "name1",
+        //   state: "Training",
+        //   datasetUrl: "url",
+        //   modelUrl: "url",
+        //   valLoss: 1.1,
+        //   trainLoss: 2.2,
+        //   valAcc: 3.3,
+        //   trainAcc: 4.4,
+        //   createdAt: "2021-06-12 09:09:09",
+        //   userId: "id",
+        //   preConfig: {
+        //     cmds: [""],
+        //   },
+        //   mlConfig: {
+        //     task: "classification",
+        //     validateRatio: 0.2,
+        //     modelTag: "nn",
+        //   },
+        // },
+        // {
+        //   id: "",
+        //   name: "name2",
+        //   state: "Finished",
+        //   datasetUrl: "url",
+        //   modelUrl: "url",
+        //   valLoss: 1.1,
+        //   trainLoss: 2.2,
+        //   valAcc: 3.3,
+        //   trainAcc: 4.4,
+        //   createdAt: "2021-06-12 09:09:09",
+        //   userId: "id",
+        //   preConfig: {
+        //     cmds: [""],
+        //   },
+        //   mlConfig: {
+        //     task: "classification",
+        //     validateRatio: 0.2,
+        //     modelTag: "nn",
+        //   },
+        // },
+        // {
+        //   id: "",
+        //   name: "name3",
+        //   state: "Finished",
+        //   datasetUrl: "url",
+        //   modelUrl: "url",
+        //   valLoss: 1.1,
+        //   trainLoss: 2.2,
+        //   valAcc: 3.3,
+        //   trainAcc: 4.4,
+        //   createdAt: "2021-06-12 09:09:09",
+        //   userId: "id",
+        //   preConfig: {
+        //     cmds: [""],
+        //   },
+        //   mlConfig: {
+        //     task: "classification",
+        //     validateRatio: 0.2,
+        //     modelTag: "nn",
+        //   },
+        // },
       ],
       detail: [
         {
@@ -395,68 +395,68 @@ export default {
     add(subItem) {
       this.components.push(subItem);
     },
-    saveModel(id) {
-      let saveForm = {
-        userId: this.detail.userId,
-        modelUrl: this.detail.modelUrl,
-        report: {
-          task: this.detail.mlConfig.task,
-          trainLoss: this.detail.trainLoss,
-          valLoss: this.detail.valLoss,
-          trainLossVar: this.detail.trainLossVar, // regression only
-          valLossVar: this.detail.valLossVar, // regression only
-        },
-      };
-      // fetch(training_job_url+`/${id}`+"/report", {
-      //   method: "PATCH",
-      //   headers: {
-      //     "Accept": "application/json",
-      //     "Content-Type": "application/json",
-      //     "Authorization": "Bearer " + window.localStorage.getItem("token"),
-      //   },
-      //   body: JSON.stringify(submitForm),
-      // })
-      //   .then(async (resp) => {
-      //     const a = await resp.json();
-      //     console.info(a);
-      //     if (a.status == 201) {
-      //       // this.createList();
-      //       // window.localStorage.setItem("url", null);
-      //       console.log("success");
-      // this.addPopup = false;
-      //     } else {
-      //       this.isError = true;
-      //     }
-      //   })
-      //   .catch((error) => {
-      //     console.warn("error", error);
-      //   });
-      console.info("save", saveForm,training_job_url+`/${id}`+"/report");
-    },
+    // saveModel(id) {
+    //   let saveForm = {
+    //     userId: this.detail.userId,
+    //     modelUrl: this.detail.modelUrl,
+    //     report: {
+    //       task: this.detail.mlConfig.task,
+    //       trainLoss: this.detail.trainLoss,
+    //       valLoss: this.detail.valLoss,
+    //       trainLossVar: this.detail.trainLossVar, // regression only
+    //       valLossVar: this.detail.valLossVar, // regression only
+    //     },
+    //   };
+    //   fetch(training_job_url+`/${id}`+"/report", {
+    //     method: "PATCH",
+    //     headers: {
+    //       "Accept": "application/json",
+    //       "Content-Type": "application/json",
+    //       "Authorization": "Bearer " + window.localStorage.getItem("token"),
+    //     },
+    //     body: JSON.stringify(saveForm),
+    //   })
+    //     .then(async (resp) => {
+    //       const a = await resp.json();
+    //       console.info(a);
+    //       if (a.status == 201) {
+    //         // this.createList();
+    //         // window.localStorage.setItem("url", null);
+    //         console.log("success");
+    //   this.addPopup = false;
+    //       } else {
+    //         this.isError = true;
+    //       }
+    //     })
+    //     .catch((error) => {
+    //       console.warn("error", error);
+    //     });
+    //   console.info("save", saveForm,training_job_url+`/${id}`+"/report");
+    // },
     remove(id) {
       console.info("id",training_job_url+`/${id}`)
-      // fetch(training_job_url+`/${id}`, {
-      //   method: "DELETE",
-      //   headers: {
-      //     "Accept": "application/json",
-      //     "Content-Type": "application/json",
-      //     "Authorization": "Bearer " + window.localStorage.getItem("token"),
-      //   },
-      // })
-      //   .then(async (resp) => {
-      //     const a = await resp.json();
-      //     console.info(a);
-      //     if (a.status == 200) {
-      //       this.createList();
-      //       console.log("success");
-      //       this.detailPopup = false;
-      //     } else {
-      //       this.isError = true;
-      //     }
-      //   })
-      //   .catch((error) => {
-      //     console.warn("error", error);
-      //   });
+      fetch(training_job_url+`/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + window.localStorage.getItem("token"),
+        },
+      })
+        .then(async (resp) => {
+          const a = await resp.json();
+          console.info(a);
+          if (a.status == 200) {
+            this.getPreTrainList();
+            console.log("success");
+            this.detailPopup = false;
+          } else {
+            this.isError = true;
+          }
+        })
+        .catch((error) => {
+          console.warn("error", error);
+        });
       this.detailPopup = false;
     },
     submitForm() {
@@ -486,7 +486,7 @@ export default {
           const a = await resp.json();
           console.info(a);
           if (a.status == 201) {
-            // this.createList();
+            this.getPreTrainList();
             // window.localStorage.setItem("url", null);
             console.log("success");
       this.addPopup = false;
@@ -582,7 +582,7 @@ export default {
   },
   created() {
     this.getDataset();
-    // this.getPreTrainList();
+    this.getPreTrainList();
   },
 };
 </script>

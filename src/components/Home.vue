@@ -34,8 +34,8 @@ export default {
     },
     logout(){
       window.localStorage.setItem('isLogin', false);
-      // window.localStorage.setItem('token', null);
-      console.log(this.login)
+      window.localStorage.setItem('token', null);
+      // console.log(this.login)
       this.$router.push({ path: '/' });
     },
   },

@@ -118,7 +118,7 @@ export default {
               const a = await resp.json();
               console.log(a);
               if (a.status == 201) {
-                this.$router.push("/login");
+                this.$router.push("/");
               } else {
                 this.isError = true;
               }

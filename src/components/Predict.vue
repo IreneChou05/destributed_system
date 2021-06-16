@@ -255,10 +255,15 @@
           </el-button>
         </el-form-item>
         <!-- result popUp -->
-        <el-card shadow="never"  class="card_close" :class="{ result_blank: resultShow }">
+        <el-card shadow="never"  class="result_blank">
           <h1>RESULT</h1>
           <hr />
-          <label>{{ result }}</label>
+          <template v-if="result==''">
+            <i class="el-icon-loading" style="font-size:20px;margin:20px;" />
+          </template>
+          <template v-else>
+            <label><el-link :href="result"  style="font-size:20px;margin:20px;" target="primary">{{ result }}</el-link></label>
+          </template>
         </el-card>
       </el-form>
     </el-dialog>
@@ -269,7 +274,6 @@ import { datasets_url } from "@/config/api.js";
 import { prediction_stop_url } from "@/config/api.js";
 import { prediction_start_url } from "@/config/api.js";
 import { prediction_service_url } from "@/config/api.js";
-import { prediction_batch_url } from "@/config/api.js";
 import { training_job_url } from "@/config/api.js";
 export default {
   data() {
@@ -278,7 +282,7 @@ export default {
       message: "PREDICT",
       file: "",
       file_size: "",
-      result: "Predict Result...",
+      result: "",
       show: true,
       addPopup: false,
       setPopup: false,
@@ -295,7 +299,7 @@ export default {
           icon: require("@/assets/icon/home.png"),
           index: "1",
           title: "HOME",
-          path: "",
+          path: "home",
         },
         {
           icon: require("@/assets/icon/spyglass (1).png"),
@@ -387,7 +391,7 @@ export default {
         dataUrl: this.form.dataUrl
       }
       console.info("submit", submitForm);
-      fetch(prediction_batch_url +'/predictBatch', {
+      fetch("https://"+ this.detail.serviceEndpoint, {
         method: "POST",
         headers: {
           "Accept": "application/json",
@@ -399,7 +403,7 @@ export default {
         .then(async (resp) => {
           const a = await resp.json();
           console.log(a);
-          if (a.status == 201) {
+          if (a.status == 200) {
             // window.localStorage.setItem("url", a.data.url);
             this.result = a.data.resultUrl;
             console.log("success");
@@ -444,7 +448,6 @@ export default {
         name: this.form.service_title,
         tjId: this.form.upload_model,
       };
-      this.items[0].subs = submitForm;
       console.log("submit", submitForm);
       fetch(prediction_start_url, {
         method: "POST",
@@ -884,7 +887,6 @@ img {
   overflow: auto;
 }
 .title_input {
-  width: auto;
   font-size: 30px;
 }
 /*覆蓋區*/
