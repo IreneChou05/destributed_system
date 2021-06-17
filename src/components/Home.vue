@@ -51,10 +51,10 @@ export default {
   overflow: hidden;
   color: #2c3e50;
   /* 以下四種為各種瀏覽器禁止反白 */
-  -webkit-user-select: none;
+  /* -webkit-user-select: none;
   -moz-user-select: none;
   -o-user-select: none;
-  user-select: none;
+  user-select: none; */
 }
 .home {
   width: 90%;

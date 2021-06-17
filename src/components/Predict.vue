@@ -725,8 +725,8 @@ img {
 }
 .model_blank label,
 .result_blank label {
-  height: 20px;
-  overflow-x: scroll;
+  /* height: 20px;
+  overflow-x: scroll; */
   position: relative;
   margin: 10px 20px 0px 20px;
   padding: 10px;
