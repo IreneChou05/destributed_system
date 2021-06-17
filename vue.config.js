@@ -6,6 +6,7 @@ module.exports = {
             changeOrigin: true,
             ws: false,
             secure: false,
+            toProxy: true,
             pathRewrite: {
                 '^/api': ''
             }
@@ -15,6 +16,7 @@ module.exports = {
           changeOrigin: true,
             ws: false,
             secure: false,
+            toProxy: true,
             pathRewrite: {
                 '^/dms': ''
             }
@@ -24,6 +26,7 @@ module.exports = {
           changeOrigin: true,
             ws: false,
             secure: false,
+            toProxy: true,
             pathRewrite: {
                 '^/cms': ''
             }
