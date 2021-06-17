@@ -700,10 +700,10 @@ img {
   text-align: left;
   margin: 20px auto;
   /*以下四種為各種瀏覽器禁止反白 */
-  -webkit-user-select: none;
+  /* -webkit-user-select: none;
   -moz-user-select: none;
   -o-user-select: none;
-  user-select: none;
+  user-select: none; */
 }
 .model_blank h1,
 .result_blank h1 {
@@ -725,6 +725,8 @@ img {
 }
 .model_blank label,
 .result_blank label {
+  height: 20px;
+  overflow-x: scroll;
   position: relative;
   margin: 10px 20px 0px 20px;
   padding: 10px;
