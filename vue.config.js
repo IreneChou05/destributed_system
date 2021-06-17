@@ -6,34 +6,34 @@ module.exports = {
             changeOrigin: true,
             ws: false,
             secure: false,
-            toProxy: true,
-            pathRewrite: {
-                '^/api': ''
-            }
+            // toProxy: true,
+            // pathRewrite: {
+            //     '^/api': ''
+            // }
         },
         '/dms':{
           target: 'http://13.230.8.190:8081/',
           changeOrigin: true,
             ws: false,
             secure: false,
-            toProxy: true,
-            pathRewrite: {
-                '^/dms': ''
-            }
+            // toProxy: true,
+            // pathRewrite: {
+            //     '^/dms': ''
+            // }
         },
         '/cms':{
           target: 'http://13.231.108.172:8082/',
           changeOrigin: true,
             ws: false,
             secure: false,
-            toProxy: true,
-            pathRewrite: {
-                '^/cms': ''
-            }
+            // toProxy: true,
+            // pathRewrite: {
+            //     '^/cms': ''
+            // }
         },
       }
     },
-  publicPath: process.env.NODE_ENV === 'production'
+  publicPath: process.env.NODE_ENV === 'development'
     ? '/destributed_system/'
     : '/'
   // presets: [
