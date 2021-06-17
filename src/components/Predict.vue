@@ -65,6 +65,8 @@
           @click.native="showDetail(i)"
         >
         <h1>{{card.name}}</h1>
+        <label>ServiceEndpoint: {{card.serviceEndpoint}}</label>
+        <label>Token: {{card.token}}</label>
         <p class="model_date">{{card.createdAt}}</p>
         </el-card>
       </template>
@@ -161,76 +163,6 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <!-- upload popup -->
-        <!-- <el-card
-          shadow="never"
-          class="card_close"
-          :class="{ cardUpload_open: uploadShow }"
-        >
-          <div class="upload_btn" @click="$refs.file.click()">
-            <input
-              type="file"
-              ref="file"
-              @change="fileUpload()"
-              style="display: none"
-              accept=".csv"
-            />
-            <img class="upload_img" src="@/assets/icon/upload.png" />UPLOAD
-          </div>
-          <el-form-item style="display: inline-block" prop="file_name">
-            <label> File Name: {{ form.file_name }}</label>
-          </el-form-item>
-          <el-button
-                type="warning"
-                icon="el-icon-check"
-                circle
-                style="float:right"
-                @click="batchUpload()"
-              ></el-button> -->
-        <!-- </el-card> -->
-        <!-- fillup popup -->
-        <!-- <el-card
-          shadow="never"
-          class="card_close"
-          :class="{ cardFill_open: fillShow }"
-        >
-          <div class="add_column">
-            <el-form-item
-              v-for="(input, i) in form.inputs"
-              :key="i"
-              :props="'input.' + i"
-            >
-              <el-input
-                placeholder="Column"
-                prefix-icon="el-icon-files"
-                v-model="input.col"
-                clearable
-                class="add_input"
-              >
-              </el-input>
-
-              <el-input
-                placeholder="Value"
-                prefix-icon="el-icon-edit"
-                v-model="input.val"
-                class="add_input"
-              >
-              </el-input>
-              <el-button
-                type="danger"
-                icon="el-icon-delete"
-                circle
-                @click="removeInput(input)"
-              ></el-button>
-              <el-button
-                type="warning"
-                icon="el-icon-plus"
-                circle
-                @click="addInput"
-              ></el-button>
-            </el-form-item>
-          </div>
-        </el-card> -->
         <el-form-item style="text-align: right; margin-top: 50px">
           <el-tooltip class="item" effect="dark" content="Delete Service" placement="bottom">
           <el-popconfirm
@@ -756,7 +688,7 @@ img {
   display: none;
 }
 .model_blank {
-  height: 150px;
+  height: auto;
   width: 750px;
   z-index: -1;
   overflow-x: hidden;

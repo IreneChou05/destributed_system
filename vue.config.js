@@ -7,9 +7,9 @@ module.exports = {
             ws: false,
             secure: false,
             // toProxy: true,
-            // pathRewrite: {
-            //     '^/api': ''
-            // }
+            pathRewrite: {
+                '^/api': ''
+            }
         },
         '/dms':{
           target: 'http://13.230.8.190:8081/',
@@ -17,9 +17,9 @@ module.exports = {
             ws: false,
             secure: false,
             // toProxy: true,
-            // pathRewrite: {
-            //     '^/dms': ''
-            // }
+            pathRewrite: {
+                '^/dms': ''
+            }
         },
         '/cms':{
           target: 'http://13.231.108.172:8082/',
@@ -27,9 +27,9 @@ module.exports = {
             ws: false,
             secure: false,
             // toProxy: true,
-            // pathRewrite: {
-            //     '^/cms': ''
-            // }
+            pathRewrite: {
+                '^/cms': ''
+            }
         },
       }
     },
