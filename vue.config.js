@@ -5,6 +5,7 @@ module.exports = {
             target: 'http://54.64.87.19:8083/',
             changeOrigin: true,
             ws: false,
+            secure: false,
             pathRewrite: {
                 '^/api': ''
             }
@@ -13,6 +14,7 @@ module.exports = {
           target: 'http://13.230.8.190:8081/',
           changeOrigin: true,
             ws: false,
+            secure: false,
             pathRewrite: {
                 '^/dms': ''
             }
@@ -21,6 +23,7 @@ module.exports = {
           target: 'http://13.231.108.172:8082/',
           changeOrigin: true,
             ws: false,
+            secure: false,
             pathRewrite: {
                 '^/cms': ''
             }
