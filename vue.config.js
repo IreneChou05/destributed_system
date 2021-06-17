@@ -22,7 +22,7 @@ module.exports = {
             }
         },
         '/cms':{
-          target: 'http://13.231.108.172:8082/',
+          target: 'http://54.199.27.232:8082/',
           changeOrigin: true,
             ws: false,
             secure: false,
