@@ -98,7 +98,7 @@ export default {
           if (a.status == 200) {
             window.localStorage.setItem("isLogin", true);
             window.localStorage.setItem("token", a.data.token);
-            this.$router.push("/home"); //change to '/home' after finish
+            this.$router.push("/"); //change to '/home' after finish
           } else {
             this.isError = true;
           }
